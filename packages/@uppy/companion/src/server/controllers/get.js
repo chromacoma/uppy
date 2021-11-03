@@ -22,6 +22,12 @@ function get (req, res, next) {
       return res.status(400).json({ message: 'unable to determine file size' })
     }
 
+    const maxSize = 1024 * 1024 * 1024;
+    if (size > maxSize) {
+      logger.error('File is too big', 'controller.get.provider.size', req.id)
+      return res.status(400).json({ message: 'File is too big' })
+    }
+
     logger.debug('Instantiating uploader.', null, req.id)
     const uploader = new Uploader(Uploader.reqToOptions(req, size))
 
